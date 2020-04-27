@@ -46,15 +46,16 @@ typedef struct {
 //----------------------------------------------------------------------
 
 /**
---
-@param --: --
-@return: --
+Transforms a string position into a struct Position
+@param position: string which will be transformed into a struct
+@return: struct Position
 */
 Position strToPosition(string position);
+
 /**
---
-@param --: --
-@return: --
+Transforms a struct position into a string
+@param position: struct which will be transformed into a string
+@return: string
 */
 string positionToStr(Position position);
 
@@ -87,7 +88,7 @@ Instruction readInstruction();
 //----------------------------------------------------------------------
 
 /**
-Set text color and background
+Set text and background color
 @param color: text color code
 @param background_color: background color code
 @return: (none)

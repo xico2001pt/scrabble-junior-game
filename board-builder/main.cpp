@@ -13,10 +13,16 @@ using namespace std;
 
 // Currently being used to test and debug methods
 int main() {
-	Board board(10, 10);
-	board.addWordOnBoard({ {2,3},'V',"PAULO" });
-	board.addWordOnBoard({ {3,2},'H',"MARTA" });
+	//ofstream fout("save.txt");
+	Board board(15, 15);
+	Board ori(15, 15);
+	//board.displayBoard(fout);
+	board.addWordOnBoard({ {0,1},'V',"ABC" });
+	board.addWordOnBoard({ {2,0},'H',"ACC" });
+	ori.addWordOnBoard({ {0,1},'V',"VVV" });
+	ori.addWordOnBoard({ {2,0},'H',"H-" });
 	board.displayBoard(cout);
+	cout << board.checkAdjacentPositions({ {0,0},'H',"ABCD" }, ori);
 	getchar();
 	return 0;
 }

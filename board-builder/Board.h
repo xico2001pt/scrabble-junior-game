@@ -12,6 +12,7 @@ using namespace std;
 //----------------------------------------------------------------------
 #define MAX_SIZE 20
 #define MIN_SIZE 0
+#define DICTIONARY_FILE "WORDS.txt"
 
 //----------------------------------------------------------------------
 // CLASS Board - DEFINITION 
@@ -26,7 +27,7 @@ public:
 	// search methods
 	bool checkWordInDict(string word) const;
 	bool checkPositionInVector(Position position) const;
-	bool checkAdjacentPositions(Position position) const; // Check if the position is adjacent to any initial position already chosen
+	bool checkAdjacentPositions(Instruction instruction, Board orientations) const;
 	bool checkInsideBoard(Instruction instruction) const;
 	bool checkIntersection(Instruction instruction) const;
 	// output stream methods
