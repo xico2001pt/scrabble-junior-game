@@ -11,21 +11,20 @@ using namespace std;
 // Convertion Functions - DECLARATION 
 //----------------------------------------------------------------------
 
-Position strToPosition(string position) {
-	Position posiçao;
-	posiçao.row = position[0] - 65;
-	posiçao.column = position[1] - 97;
-	return posiçao;
+Position strToPosition(string str) {
+	Position position;
+	position.row = str.at(0) - 65;
+	position.column = str.at(1) - 97;
+	return position;
 }
 
-string positionToStr(Position position)
-{
-	string posiçao = "";
-	char linha = position.row + 65;
-	char coluna = position.column + 97;
-	posiçao += toupper(linha);
-	posiçao += coluna;
-	return posiçao;
+string positionToStr(Position position) {
+	string str = "";
+	char row = position.row + 65;
+	char column = position.column + 97;
+	str += toupper(row);
+	str += column;
+	return str;
 }
 
 string upperWord(string str) {
@@ -55,7 +54,7 @@ Instruction readInstruction() {
 	ss << instructionString;
 	ss >> initialPosition >> orientation >> word;
 	// Store user input
-	//instruction.initialPosition = strToPosition(initialPosition);
+	instruction.initialPosition = strToPosition(initialPosition);
 	instruction.orientation = orientation;
 	instruction.word = word;
 	return instruction;

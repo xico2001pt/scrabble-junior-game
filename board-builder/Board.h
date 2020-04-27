@@ -20,24 +20,26 @@ using namespace std;
 class Board {
 public:
 	// constructors & destructors
-	Board(char rows, char columns); // Set size and allocate board
+	Board(char rows, char columns, string filename); // Set size and allocate boards
 	~Board(); // Free allocated memory
 	// set methods
 	void addWordOnBoard(Instruction instruction);
 	// search methods
 	bool checkWordInDict(string word) const;
 	bool checkPositionInVector(Position position) const;
-	bool checkAdjacentPositions(Instruction instruction, Board orientations) const;
+	bool checkAdjacentPositions(Instruction instruction) const;
 	bool checkInsideBoard(Instruction instruction) const;
 	bool checkIntersection(Instruction instruction) const;
 	// output stream methods
 	void displayBoard(ostream &fout) const;
-	void saveBoard(ostream &fout) const;
+	void saveBoard() const;
 private:
 	// attributes
 	char rows;
 	char columns;
+	string filename;
 	vector<Instruction> instructions;
 	char** board;
+	char** orientationsBoard;
 };
 #endif

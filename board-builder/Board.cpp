@@ -14,15 +14,20 @@ using namespace std;
 /**
 Constructor
 */
-Board::Board(char rows, char columns) {
-	// Initialize size of the board
+Board::Board(char rows, char columns, string filename) {
+	// Initialize size and name of the board
 	this->rows = rows;
 	this->columns = columns;
-	// Allocate memory to board (2D array)
+	this->filename = filename;
+	// Allocate memory to board and orientations board (2D arrays)
 	board = (char**)malloc(rows * sizeof(char*));
+	orientationsBoard = (char**)malloc(rows * sizeof(char*));
 	for (char i = 0; i < rows; i++) {
 		board[i] = (char*)malloc(columns * sizeof(char));
-		memset(board[i], ' ', columns); // Fill each row with empty spaces
+		orientationsBoard[i] = (char*)malloc(columns * sizeof(char));
+		// Fill each row with empty spaces
+		memset(board[i], ' ', columns);
+		memset(orientationsBoard[i], ' ', columns);
 	}
 }
 
@@ -30,9 +35,13 @@ Board::Board(char rows, char columns) {
 Destructor
 */
 Board::~Board() {
-	for (char i = 0; i < rows; i++)
+	// Free memory in board and orientations board (2D arrays)
+	for (char i = 0; i < rows; i++) {
 		free(board[i]);
+		free(orientationsBoard[i]);
+	}
 	free(board);
+	free(orientationsBoard);
 }
 
 /**
@@ -45,23 +54,37 @@ void Board::addWordOnBoard(Instruction instruction) {
 	Position initialPosition = instruction.initialPosition;
 	char orientation = instruction.orientation;
 	string word = instruction.word;
+	// Temporary pointer holder
+	char* value;
 	// Write word on board
 	unsigned char i;
 	if (orientation == 'H') {
 		if (initialPosition.column - 1 >= 0)
 			board[initialPosition.row][initialPosition.column - 1] = -1; // Forbidden spot
-		for (i = 0; i < word.length(); i++)
+		for (i = 0; i < word.length(); i++) {
 			board[initialPosition.row][initialPosition.column + i] = word.at(i);
+			value = &(orientationsBoard[initialPosition.row][initialPosition.column + i]);
+			if (*value == 'V')
+				*value = 'I'; // Intersection
+			else
+				*value = 'H';
+		}
 		if (initialPosition.column + i <= 20)
 			board[initialPosition.row][initialPosition.column + i] = -1; // Forbidden spot
 	}
 	else {
 		if (initialPosition.row - 1 >= 0)
-			board[initialPosition.row - 1][initialPosition.column] = -1;
-		for (i = 0; i < word.length(); i++)
+			board[initialPosition.row - 1][initialPosition.column] = -1; // Forbidden spot
+		for (i = 0; i < word.length(); i++) {
 			board[initialPosition.row + i][initialPosition.column] = word.at(i);
+			value = &(orientationsBoard[initialPosition.row + i][initialPosition.column]);
+			if (*value == 'H')
+				*value = 'I'; // Intersection
+			else
+				*value = 'V';
+		}
 		if (initialPosition.row + i <= 20)
-			board[initialPosition.row + i][initialPosition.column] = -1;
+			board[initialPosition.row + i][initialPosition.column] = -1; // Forbidden spot
 	}
 	// Store in instructions vector
 	instructions.push_back(instruction);
@@ -91,41 +114,88 @@ Check if position has already been occupied
 @return: boolean indicating if position has already been occupied
 */
 bool Board::checkPositionInVector(Position position) const {
-	for (char i = 0; i < instructions.size(); i++) {
-		if ((position.row == instructions[i].initialPosition.row) && (position.column == instructions[i].initialPosition.column))
+	for (unsigned char i = 0; i < instructions.size(); i++)
+		if ((position.row == instructions.at(i).initialPosition.row) && (position.column == instructions.at(i).initialPosition.column))
 			return true;
-		return false;
-	}
+	return false;
 }
 
 /**
-Check if the instruction is valid based in the adjacent positions 
+Check if the instruction is valid based in the adjacent positions
 @param instruction: instruction which will be checked
-@param orientations: board containing the orientations of the words (H, V and -)
 @return: boolean indicating if the instruction is valid
 */
-bool Board::checkAdjacentPositions(Instruction instruction, Board orientations) const {
+bool Board::checkAdjacentPositions(Instruction instruction) const {
 	// Store instruction information
 	Position initialPosition = instruction.initialPosition;
 	char orientation = instruction.orientation;
 	string word = instruction.word;
-	// Store orientations board information
-	char** board = orientations.board;
 	// Check surrounding orientations
 	if (orientation == 'H')
-		for (char i = 0; i < word.length(); i++) {
-			if (initialPosition.row - 1 >= 0 && (board[initialPosition.row - 1][initialPosition.column] == 'H' || board[initialPosition.row - 1][initialPosition.column] == '-'))
+		for (unsigned char i = 0; i < word.length(); i++) {
+			if (initialPosition.row - 1 >= 0 && (orientationsBoard[initialPosition.row - 1][initialPosition.column] == 'H' || orientationsBoard[initialPosition.row - 1][initialPosition.column] == 'I'))
 				return false;
-			else if (initialPosition.row + 1 <= rows && (board[initialPosition.row + 1][initialPosition.column] == 'H' || board[initialPosition.row + 1][initialPosition.column] == '-'))
+			else if (initialPosition.row + 1 <= rows && (orientationsBoard[initialPosition.row + 1][initialPosition.column] == 'H' || orientationsBoard[initialPosition.row + 1][initialPosition.column] == 'I'))
 				return false;
 		}
 	else
-		for (char i = 0; i < word.length(); i++) {
-			if (initialPosition.column - 1 >= 0 && (board[initialPosition.row][initialPosition.column - 1] == 'V' || board[initialPosition.row][initialPosition.column - 1] == '-'))
+		for (unsigned char i = 0; i < word.length(); i++) {
+			if (initialPosition.column - 1 >= 0 && (orientationsBoard[initialPosition.row][initialPosition.column - 1] == 'V' || orientationsBoard[initialPosition.row][initialPosition.column - 1] == 'I'))
 				return false;
-			else if (initialPosition.column + 1 <= columns && (board[initialPosition.row][initialPosition.column + 1] == 'V' || board[initialPosition.row][initialPosition.column + 1] == '-'))
+			else if (initialPosition.column + 1 <= columns && (orientationsBoard[initialPosition.row][initialPosition.column + 1] == 'V' || orientationsBoard[initialPosition.row][initialPosition.column + 1] == 'I'))
 				return false;
 		}
+	return true;
+}
+
+/**
+Checks if the chosen instruction is within the board limits
+@param instruction: struct containing the necessary information to check
+@return: boolean indicating if the instruction is within the board limits
+*/
+bool Board::checkInsideBoard(Instruction instruction) const {
+	// Store instruction information
+	Position initialPosition = instruction.initialPosition;
+	char orientation = instruction.orientation;
+	string word = instruction.word;
+	// Check if the word fits in the board
+	if (orientation == 'H')
+		if ((initialPosition.column + word.length()) > columns)
+			return false;
+	else
+		if ((initialPosition.row + word.length()) > rows)
+			return false;
+	return true;
+}
+
+/**
+Checks if the word respects other words intersections
+@param instruction: instruction which will be checked
+@return: boolean indicating if the word respects intersections
+*/
+bool Board::checkIntersection(Instruction instruction) const {
+	// Store instruction information
+	Position initialPosition = instruction.initialPosition;
+	char orientation = instruction.orientation;
+	string word = instruction.word;
+	// Check if the word intersects other word or a forbidden spot
+	if (orientation == 'H')
+		for (unsigned char i = 0; i < word.length(); i++) {
+			if (board[initialPosition.row][initialPosition.column + i] != ' ') {
+				if (board[initialPosition.row][initialPosition.column + i] == -1)
+					return false;
+				else if (board[initialPosition.row][initialPosition.column + i] != word.at(i))
+					return false;
+			}
+		}
+	else
+		for (unsigned char i = 0; i < word.length(); i++)
+			if (board[initialPosition.row + i][initialPosition.column] != ' ') {
+				if (board[initialPosition.row + i][initialPosition.column] == -1)
+					return false;
+				else if (board[initialPosition.row + i][initialPosition.column] != word.at(i))
+					return false;
+			}
 	return true;
 }
 
@@ -154,6 +224,19 @@ void Board::displayBoard(ostream& fout) const {
 		setColor(LIGHTGRAY, BLACK); // Reset text and background color
 		fout << endl;
 	}
+}
+
+/**
+Saves the board into a text file
+@return: (none)
+*/
+void Board::saveBoard() const {
+	ofstream fout(filename + ".txt"); // Create output stream
+	fout << (int)rows << " x " << (int)columns << endl;
+	for (char i = 0; i < instructions.size(); i++)
+		fout << positionToStr(instructions.at(i).initialPosition) << ' ' << instructions.at(i).orientation << ' ' << instructions.at(i).word << endl;
+	displayBoard(fout);
+	fout.close();
 }
 
 /**
