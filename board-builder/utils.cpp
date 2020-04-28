@@ -41,23 +41,33 @@ string lowerWord(string str) {
 // Input Functions - DECLARATION
 //----------------------------------------------------------------------
 
-Instruction readInstruction() {
-	stringstream ss;
+bool readInstruction(Instruction &instruction) {
 	string instructionString;
-	Instruction instruction;
 	// Input variables
 	string initialPosition;
 	char orientation;
 	string word;
 	// Get user input
-	getline(cin, instructionString);
-	ss << instructionString;
-	ss >> initialPosition >> orientation >> word;
+	bool isValid = false;
+	do {
+		stringstream ss;
+		getline(cin, instructionString);
+		ss << instructionString;
+		ss >> initialPosition >> orientation >> word;
+		if (cin.fail() && cin.eof()) {
+			cin.clear();
+			return false;
+		}
+		else if (initialPosition[0] >= 'A' && initialPosition[0] <= 'Z' && initialPosition[1] >= 'a' && initialPosition[1] <= 'z' && (orientation == 'H' || orientation == 'V') && word != "")
+			isValid = true;
+		else
+			cerr << "Invalid Syntax!" << endl;
+	} while (!isValid);
 	// Store user input
 	instruction.initialPosition = strToPosition(initialPosition);
 	instruction.orientation = orientation;
-	instruction.word = word;
-	return instruction;
+	instruction.word = upperWord(word);
+	return true;
 }
 
 //----------------------------------------------------------------------

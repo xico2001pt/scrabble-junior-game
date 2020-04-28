@@ -11,7 +11,7 @@ using namespace std;
 // CONSTANTS
 //----------------------------------------------------------------------
 #define MAX_SIZE 20
-#define MIN_SIZE 0
+#define MIN_SIZE 1
 #define DICTIONARY_FILE "WORDS.txt"
 
 //----------------------------------------------------------------------
@@ -26,7 +26,7 @@ public:
 	void addWordOnBoard(Instruction instruction);
 	// search methods
 	bool checkWordInDict(string word) const;
-	bool checkPositionInVector(Position position) const;
+	bool checkInstructionInVector(Instruction instruction) const;
 	bool checkAdjacentPositions(Instruction instruction) const;
 	bool checkInsideBoard(Instruction instruction) const;
 	bool checkIntersection(Instruction instruction) const;

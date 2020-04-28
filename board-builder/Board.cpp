@@ -113,10 +113,16 @@ Check if position has already been occupied
 @param position: struct which will be searched
 @return: boolean indicating if position has already been occupied
 */
-bool Board::checkPositionInVector(Position position) const {
+bool Board::checkInstructionInVector(Instruction instruction) const {
+	// Store instruction information
+	Position initialPosition = instruction.initialPosition;
+	char orientation = instruction.orientation;
+	string word = instruction.word;
 	for (unsigned char i = 0; i < instructions.size(); i++)
-		if ((position.row == instructions.at(i).initialPosition.row) && (position.column == instructions.at(i).initialPosition.column))
-			return true;
+		if (orientation == instructions.at(i).orientation) // Check equal orientation
+			if (word == instructions.at(i).word) // Check equal word
+				if ((initialPosition.row == instructions.at(i).initialPosition.row) && (initialPosition.column == instructions.at(i).initialPosition.column)) // Check equal position
+					return true;
 	return false;
 }
 
@@ -133,16 +139,16 @@ bool Board::checkAdjacentPositions(Instruction instruction) const {
 	// Check surrounding orientations
 	if (orientation == 'H')
 		for (unsigned char i = 0; i < word.length(); i++) {
-			if (initialPosition.row - 1 >= 0 && (orientationsBoard[initialPosition.row - 1][initialPosition.column] == 'H' || orientationsBoard[initialPosition.row - 1][initialPosition.column] == 'I'))
+			if (initialPosition.row - 1 >= 0 && (orientationsBoard[initialPosition.row - 1][initialPosition.column + i] == 'H' || orientationsBoard[initialPosition.row - 1][initialPosition.column + i] == 'I'))
 				return false;
-			else if (initialPosition.row + 1 <= rows && (orientationsBoard[initialPosition.row + 1][initialPosition.column] == 'H' || orientationsBoard[initialPosition.row + 1][initialPosition.column] == 'I'))
+			else if (initialPosition.row + 1 <= rows && (orientationsBoard[initialPosition.row + 1][initialPosition.column + i] == 'H' || orientationsBoard[initialPosition.row + 1][initialPosition.column + i] == 'I'))
 				return false;
 		}
 	else
 		for (unsigned char i = 0; i < word.length(); i++) {
-			if (initialPosition.column - 1 >= 0 && (orientationsBoard[initialPosition.row][initialPosition.column - 1] == 'V' || orientationsBoard[initialPosition.row][initialPosition.column - 1] == 'I'))
+			if (initialPosition.column - 1 >= 0 && (orientationsBoard[initialPosition.row + i][initialPosition.column - 1] == 'V' || orientationsBoard[initialPosition.row + i][initialPosition.column - 1] == 'I'))
 				return false;
-			else if (initialPosition.column + 1 <= columns && (orientationsBoard[initialPosition.row][initialPosition.column + 1] == 'V' || orientationsBoard[initialPosition.row][initialPosition.column + 1] == 'I'))
+			else if (initialPosition.column + 1 <= columns && (orientationsBoard[initialPosition.row + i][initialPosition.column + 1] == 'V' || orientationsBoard[initialPosition.row + i][initialPosition.column + 1] == 'I'))
 				return false;
 		}
 	return true;
@@ -159,12 +165,14 @@ bool Board::checkInsideBoard(Instruction instruction) const {
 	char orientation = instruction.orientation;
 	string word = instruction.word;
 	// Check if the word fits in the board
-	if (orientation == 'H')
+	if (orientation == 'H') {
 		if ((initialPosition.column + word.length()) > columns)
 			return false;
-	else
+	}
+	else {
 		if ((initialPosition.row + word.length()) > rows)
 			return false;
+	}
 	return true;
 }
 
@@ -233,14 +241,9 @@ Saves the board into a text file
 void Board::saveBoard() const {
 	ofstream fout(filename + ".txt"); // Create output stream
 	fout << (int)rows << " x " << (int)columns << endl;
-	for (char i = 0; i < instructions.size(); i++)
+	for (unsigned char i = 0; i < instructions.size(); i++)
 		fout << positionToStr(instructions.at(i).initialPosition) << ' ' << instructions.at(i).orientation << ' ' << instructions.at(i).word << endl;
+	fout << endl;
 	displayBoard(fout);
 	fout.close();
 }
-
-/**
---
-@param --: --
-@return: --
-*/

@@ -78,10 +78,9 @@ string lowerWord(string str);
 //----------------------------------------------------------------------
 
 /**
-Reads an instruction inserted as input
-@return: instruction inserted by the user as a struct
+
 */
-Instruction readInstruction();
+bool readInstruction(Instruction& instruction);
 
 //----------------------------------------------------------------------
 // Output Functions - DEFINITION 
