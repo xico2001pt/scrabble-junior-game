@@ -46,19 +46,19 @@ int main() {
 			running = false;
 		else if (board.checkInstructionInVector(instruction)) {
 			cerr << "The instruction has already been used!" << endl;
-			getchar();
+			getchar(); // Wait for the user to continue
 		}
 		else if (!board.checkInsideBoard(instruction)) {
 			cerr << "The word doesn't fit in the board!" << endl;
-			getchar();
+			getchar(); // Wait for the user to continue
 		}
 		else if (!board.checkAdjacentPositions(instruction) || !board.checkIntersection(instruction)) {
 			cerr << "Invalid position!" << endl;
-			getchar();
+			getchar(); // Wait for the user to continue
 		}
 		else if (!board.checkWordInDict(instruction.word)) {
 			cerr << "Please choose a word from the dictionary!" << endl;
-			getchar();
+			getchar(); // Wait for the user to continue
 		}
 		else
 			board.addWordOnBoard(instruction);
@@ -66,6 +66,6 @@ int main() {
 	// Save file
 	board.saveBoard();
 	cout << "The board was successfully saved!" << endl;
-	getchar();
+	getchar(); // Wait for the user to continue
 	return 0;
 }

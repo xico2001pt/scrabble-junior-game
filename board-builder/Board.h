@@ -40,6 +40,6 @@ private:
 	string filename;
 	vector<Instruction> instructions;
 	char** board;
-	char** orientationsBoard;
+	char** orientationsBoard; // Saves the orientation of the letters
 };
 #endif

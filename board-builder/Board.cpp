@@ -69,7 +69,7 @@ void Board::addWordOnBoard(Instruction instruction) {
 			else
 				*value = 'H';
 		}
-		if (initialPosition.column + i <= 20)
+		if (initialPosition.column + i < columns)
 			board[initialPosition.row][initialPosition.column + i] = -1; // Forbidden spot
 	}
 	else {
@@ -83,7 +83,7 @@ void Board::addWordOnBoard(Instruction instruction) {
 			else
 				*value = 'V';
 		}
-		if (initialPosition.row + i <= 20)
+		if (initialPosition.row + i < rows)
 			board[initialPosition.row + i][initialPosition.column] = -1; // Forbidden spot
 	}
 	// Store in instructions vector
@@ -138,7 +138,7 @@ bool Board::checkAdjacentPositions(Instruction instruction) const {
 	string word = instruction.word;
 	// Check surrounding orientations
 	if (orientation == 'H')
-		for (unsigned char i = 0; i < word.length(); i++) {
+		for (unsigned char i = 1; i < word.length()-1; i++) {
 			if (initialPosition.row - 1 >= 0 && (orientationsBoard[initialPosition.row - 1][initialPosition.column + i] == 'H' || orientationsBoard[initialPosition.row - 1][initialPosition.column + i] == 'I'))
 				return false;
 			else if (initialPosition.row + 1 <= rows && (orientationsBoard[initialPosition.row + 1][initialPosition.column + i] == 'H' || orientationsBoard[initialPosition.row + 1][initialPosition.column + i] == 'I'))
