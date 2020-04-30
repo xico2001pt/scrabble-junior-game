@@ -41,7 +41,7 @@ string lowerWord(string str) {
 // Input Functions - DECLARATION
 //----------------------------------------------------------------------
 
-bool readInstruction(Instruction &instruction) {
+bool readInstruction(Instruction& instruction) {
 	string instructionString;
 	// Input variables
 	string initialPosition;

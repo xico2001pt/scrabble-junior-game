@@ -109,9 +109,9 @@ bool Board::checkWordInDict(string word) const {
 }
 
 /**
-Check if position has already been occupied
-@param position: struct which will be searched
-@return: boolean indicating if position has already been occupied
+Checks if instruction already exists
+@param instruction: struct which will be searched
+@return: boolean indicating if the instruction already exists
 */
 bool Board::checkInstructionInVector(Instruction instruction) const {
 	// Store instruction information
@@ -138,17 +138,17 @@ bool Board::checkAdjacentPositions(Instruction instruction) const {
 	string word = instruction.word;
 	// Check surrounding orientations
 	if (orientation == 'H')
-		for (unsigned char i = 1; i < word.length()-1; i++) {
+		for (unsigned char i = 1; i < word.length() - 1; i++) {
 			if (initialPosition.row - 1 >= 0 && (orientationsBoard[initialPosition.row - 1][initialPosition.column + i] == 'H' || orientationsBoard[initialPosition.row - 1][initialPosition.column + i] == 'I'))
 				return false;
-			else if (initialPosition.row + 1 <= rows && (orientationsBoard[initialPosition.row + 1][initialPosition.column + i] == 'H' || orientationsBoard[initialPosition.row + 1][initialPosition.column + i] == 'I'))
+			else if (initialPosition.row + 1 < rows && (orientationsBoard[initialPosition.row + 1][initialPosition.column + i] == 'H' || orientationsBoard[initialPosition.row + 1][initialPosition.column + i] == 'I'))
 				return false;
 		}
 	else
 		for (unsigned char i = 0; i < word.length(); i++) {
 			if (initialPosition.column - 1 >= 0 && (orientationsBoard[initialPosition.row + i][initialPosition.column - 1] == 'V' || orientationsBoard[initialPosition.row + i][initialPosition.column - 1] == 'I'))
 				return false;
-			else if (initialPosition.column + 1 <= columns && (orientationsBoard[initialPosition.row + i][initialPosition.column + 1] == 'V' || orientationsBoard[initialPosition.row + i][initialPosition.column + 1] == 'I'))
+			else if (initialPosition.column + 1 < columns && (orientationsBoard[initialPosition.row + i][initialPosition.column + 1] == 'V' || orientationsBoard[initialPosition.row + i][initialPosition.column + 1] == 'I'))
 				return false;
 		}
 	return true;
@@ -187,8 +187,12 @@ bool Board::checkIntersection(Instruction instruction) const {
 	char orientation = instruction.orientation;
 	string word = instruction.word;
 	// Check if the word intersects other word or a forbidden spot
-	if (orientation == 'H')
-		for (unsigned char i = 0; i < word.length(); i++) {
+	unsigned char i;
+	if (orientation == 'H') {
+		if (initialPosition.column - 1 >= 0)
+			if (board[initialPosition.row][initialPosition.column - 1] != ' ' && board[initialPosition.row][initialPosition.column - 1] != -1)
+				return false;
+		for (i = 0; i < word.length(); i++) {
 			if (board[initialPosition.row][initialPosition.column + i] != ' ') {
 				if (board[initialPosition.row][initialPosition.column + i] == -1)
 					return false;
@@ -196,14 +200,25 @@ bool Board::checkIntersection(Instruction instruction) const {
 					return false;
 			}
 		}
-	else
-		for (unsigned char i = 0; i < word.length(); i++)
+		if (initialPosition.column + i < columns)
+			if (board[initialPosition.row][initialPosition.column + i] != ' ' && board[initialPosition.row][initialPosition.column + i] != -1)
+				return false;
+	}
+	else {
+		if (initialPosition.row - 1 >= 0)
+			if (board[initialPosition.row - 1][initialPosition.column] != ' ' && board[initialPosition.row - 1][initialPosition.column] != -1)
+				return false;
+		for (i = 0; i < word.length(); i++)
 			if (board[initialPosition.row + i][initialPosition.column] != ' ') {
 				if (board[initialPosition.row + i][initialPosition.column] == -1)
 					return false;
 				else if (board[initialPosition.row + i][initialPosition.column] != word.at(i))
 					return false;
 			}
+		if (initialPosition.row + i < rows)
+			if (board[initialPosition.row + i][initialPosition.column] != ' ' && board[initialPosition.row + i][initialPosition.column] != -1)
+				return false;
+	}
 	return true;
 }
 

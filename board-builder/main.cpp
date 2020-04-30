@@ -15,7 +15,7 @@ int main() {
 	// Ask board size
 	unsigned int rows, columns;
 	char separator;
-	bool isValid=false;
+	bool isValid = false;
 	cout << "Choose a size to the board (rows x columns):" << endl;
 	while (!isValid) {
 		cin >> rows >> separator >> columns;
@@ -35,33 +35,29 @@ int main() {
 	getline(cin, filename);
 	// Create board object
 	Board board((char)rows, (char)columns, filename);
-	// While loop
+	// Main loop
 	Instruction instruction;
 	bool running = true;
+	system("cls"); // Clear console
+	board.displayBoard(cout);
+	cout << "Insert instruction (Ex: Ca H DOG):\n(CTRL^Z to exit)" << endl;
 	while (running) {
-		system("cls"); // Clear console
-		board.displayBoard(cout);
-		cout << "Insert instruction (Ex: Ca H DOG):\n(CTRL^Z to exit)" << endl;
 		if (!readInstruction(instruction))
 			running = false;
-		else if (board.checkInstructionInVector(instruction)) {
+		else if (board.checkInstructionInVector(instruction))
 			cerr << "The instruction has already been used!" << endl;
-			getchar(); // Wait for the user to continue
-		}
-		else if (!board.checkInsideBoard(instruction)) {
+		else if (!board.checkInsideBoard(instruction))
 			cerr << "The word doesn't fit in the board!" << endl;
-			getchar(); // Wait for the user to continue
-		}
-		else if (!board.checkAdjacentPositions(instruction) || !board.checkIntersection(instruction)) {
+		else if (!board.checkAdjacentPositions(instruction) || !board.checkIntersection(instruction))
 			cerr << "Invalid position!" << endl;
-			getchar(); // Wait for the user to continue
-		}
-		else if (!board.checkWordInDict(instruction.word)) {
+		else if (!board.checkWordInDict(instruction.word))
 			cerr << "Please choose a word from the dictionary!" << endl;
-			getchar(); // Wait for the user to continue
-		}
-		else
+		else {
 			board.addWordOnBoard(instruction);
+			system("cls"); // Clear console
+			board.displayBoard(cout);
+			cout << "Insert instruction (Ex: Ca H DOG):\n(CTRL^Z to exit)" << endl;
+		}
 	}
 	// Save file
 	board.saveBoard();

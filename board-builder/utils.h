@@ -78,7 +78,9 @@ string lowerWord(string str);
 //----------------------------------------------------------------------
 
 /**
-
+Saves the user input in the given parameter unless CTRZ^Z is activated
+@param instruction: struct that will hold the user input
+return: boolean indicating if the instruction was changed
 */
 bool readInstruction(Instruction& instruction);
 

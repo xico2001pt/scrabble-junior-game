@@ -31,7 +31,7 @@ public:
 	bool checkInsideBoard(Instruction instruction) const;
 	bool checkIntersection(Instruction instruction) const;
 	// output stream methods
-	void displayBoard(ostream &fout) const;
+	void displayBoard(ostream& fout) const;
 	void saveBoard() const;
 private:
 	// attributes
