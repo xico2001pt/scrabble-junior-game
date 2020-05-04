@@ -2,6 +2,7 @@
 #define BOARD_H
 
 #include "utils.h"
+#include "Player.h"
 #include <fstream>
 #include <string>
 #include <vector>
@@ -21,24 +22,26 @@ public:
 	Board(string filename); // Set size and allocate boards
 	~Board(); // Free allocated memory
 	// set methods
-	void setLetter(Position position);
+	void setPlayedLetter(Position position);
+	void subRemainingWords();
 	// get methods
 	char getLetter(Position position) const;
 	// search methods
-	bool checkInsideBoard(Instruction instruction) const;
-	bool checkValidPosition() const;
-	bool checkPossiblePlaytrough(vector<char> hand) const;
+	bool checkInsideBoard(Position position) const;
+	bool checkValidPosition(Position position) const;
+	bool checkPossiblePlaytrough(Player player) const;
 	bool checkCompleteWord(Position position) const;
 	// output stream methods
 	void displayBoard(ostream& fout) const;
-	void loadBoard();
 private:
+	// private methods
+	void addWordOnBoard(Instruction instruction);
 	// attributes
 	char rows;
 	char columns;
 	string filename;
 	char** board;
 	char** orientationsBoard; // Saves the orientation of the letters
-	char remainingWord;
+	char remainingWords;
 };
 #endif
