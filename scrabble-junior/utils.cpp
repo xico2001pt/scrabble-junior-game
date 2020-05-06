@@ -1,75 +1,65 @@
 #include "utils.h"
 #include <iostream>
+#include <ctype.h>
 #include <string>
-#include <sstream>
 #include <vector>
 #include <algorithm>
 #include <windows.h>
 using namespace std;
 
 //----------------------------------------------------------------------
+// Random Functions - DECLARATION 
+//----------------------------------------------------------------------
+size_t randomNumber(const size_t min, const size_t max) {
+	return (rand() % (max - min + 1)) + min;
+}
+
+//----------------------------------------------------------------------
 // Convertion Functions - DECLARATION 
 //----------------------------------------------------------------------
 
-Position strToPosition(string str) {
+Position strToPosition(const string str) {
 	Position position;
 	position.row = str.at(0) - 65;
 	position.column = str.at(1) - 97;
 	return position;
 }
 
-string positionToStr(Position position) {
-	string str = "";
-	char row = position.row + 65;
-	char column = position.column + 97;
-	str += toupper(row);
-	str += column;
-	return str;
-}
-
-string upperWord(string str) {
-	transform(str.begin(), str.end(), str.begin(), toupper);
-	return str;
-}
-
-string lowerWord(string str) {
-	transform(str.begin(), str.end(), str.begin(), tolower);
-	return str;
-}
-
 //----------------------------------------------------------------------
 // Input Functions - DECLARATION
 //----------------------------------------------------------------------
 
-bool readPosition(Position& position) {
-	/*
-	string instructionString;
-	// Input variables
-	string initialPosition;
-	char orientation;
-	string word;
-	// Get user input
+Position readPosition() {
+	// Input variable
+	string input;
+	// User Input Loop
 	bool isValid = false;
 	do {
-		stringstream ss;
-		getline(cin, instructionString);
-		ss << instructionString;
-		ss >> initialPosition >> orientation >> word;
-		if (cin.fail() && cin.eof()) {
-			cin.clear();
-			return false;
-		}
-		else if (initialPosition[0] >= 'A' && initialPosition[0] <= 'Z' && initialPosition[1] >= 'a' && initialPosition[1] <= 'z' && (orientation == 'H' || orientation == 'V') && word != "")
+		getline(cin, input);
+		if (input.length() == 2 && isupper(input.at(0)) && islower(input.at(1)))
 			isValid = true;
 		else
-			cerr << "Invalid Syntax!" << endl;
+			cout << "Invalid Syntax!" << endl;
 	} while (!isValid);
-	// Store user input
-	instruction.initialPosition = strToPosition(initialPosition);
-	instruction.orientation = orientation;
-	instruction.word = upperWord(word);
-	return true;
-	*/
+	return strToPosition(input);
+}
+
+char readTile() {
+	// Input variable
+	char input;
+	// User Input Loop
+	bool isValid = false;
+	do {
+		cin >> input;
+		if (!cin.fail() && cin.peek() == '\n' && isalpha(input))
+			isValid = true;
+		else {
+			cin.clear();
+			cin.ignore(100, '\n');
+			cout << "Invalid Syntax!" << endl;
+		}
+	} while (!isValid);
+	return input;
 }
 
 //----------------------------------------------------------------------

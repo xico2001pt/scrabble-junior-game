@@ -2,6 +2,7 @@
 #define UTILS_H
 
 #include <string>
+#include <vector>
 using namespace std;
 
 //----------------------------------------------------------------------
@@ -42,6 +43,22 @@ typedef struct {
 } Instruction;
 
 //----------------------------------------------------------------------
+// Search Functions - DEFINITION & DECLARATION 
+//----------------------------------------------------------------------
+template <typename identifier>
+bool isInVector(identifier elem, vector<identifier> v) {
+	for (identifier value : v)
+		if (elem == value)
+			return true;
+	return false;
+}
+
+//----------------------------------------------------------------------
+// Random Functions - DEFINITION 
+//----------------------------------------------------------------------
+size_t randomNumber(const size_t min, const size_t max);
+
+//----------------------------------------------------------------------
 // Convertion Functions - DEFINITION 
 //----------------------------------------------------------------------
 
@@ -50,40 +67,23 @@ Transforms a string position into a struct Position
 @param position: string which will be transformed into a struct
 @return: struct Position
 */
-Position strToPosition(string position);
-
-/**
-Transforms a struct position into a string
-@param position: struct which will be transformed into a string
-@return: string
-*/
-string positionToStr(Position position);
-
-/**
-Transforms all letters of a string into uppercase
-@param str: string which letters will be uppercase
-@return: uppercase string
-*/
-string upperWord(string str);
-
-/**
-Transforms all letters of a string into lowercase
-@param str: string which letters will be lowercase
-@return: lowercase string
-*/
-string lowerWord(string str);
+Position strToPosition(const string position);
 
 //----------------------------------------------------------------------
-// Output Functions - DEFINITION 
+// Input Functions - DEFINITION 
 //----------------------------------------------------------------------
 
 /**
-Saves the user input in the given parameter
-@param position: struct that will hold the user input
-return: boolean indicating if the position was changed
+Reads the user input
+return: struct holding the chosen position
 */
-bool readPosition(Position& position);
+Position readPosition();
 
+/**
+Reads the user input
+return: character holding the chosen tile
+*/
+char readTile();
 //----------------------------------------------------------------------
 // Output Functions - DEFINITION 
 //----------------------------------------------------------------------
