@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "utils.hpp"
 #include <iostream>
 #include <ctype.h>
 #include <string>
@@ -8,17 +8,17 @@
 using namespace std;
 
 //----------------------------------------------------------------------
-// Random Functions - DECLARATION 
+// Random Functions - IMPLEMENTATION 
 //----------------------------------------------------------------------
-size_t randomNumber(const size_t min, const size_t max) {
+size_t randomNumber(const size_t &min, const size_t &max) {
 	return (rand() % (max - min + 1)) + min;
 }
 
 //----------------------------------------------------------------------
-// Convertion Functions - DECLARATION 
+// Convertion Functions - IMPLEMENTATION 
 //----------------------------------------------------------------------
 
-Position strToPosition(const string str) {
+Position strToPosition(const string &str) {
 	Position position;
 	position.row = str.at(0) - 65;
 	position.column = str.at(1) - 97;
@@ -26,7 +26,7 @@ Position strToPosition(const string str) {
 }
 
 //----------------------------------------------------------------------
-// Input Functions - DECLARATION
+// Input Functions - IMPLEMENTATION 
 //----------------------------------------------------------------------
 
 Position readPosition() {
@@ -63,10 +63,10 @@ char readTile() {
 }
 
 //----------------------------------------------------------------------
-// Output Functions - DECLARATION 
+// Output Functions - IMPLEMENTATION 
 //----------------------------------------------------------------------
 
-void setColor(unsigned int color, unsigned int background_color) {
+void setColor(const unsigned int &color, const unsigned int &background_color) {
 	HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
 	if (background_color == BLACK)
 		SetConsoleTextAttribute(hCon, color);
