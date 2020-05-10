@@ -1,17 +1,12 @@
-#ifndef BOARD_H
-#define BOARD_H
+#ifndef BOARD_HPP
+#define BOARD_HPP
 
-#include "utils.h"
-#include "Player.h"
+#include "utils.hpp"
+#include "Player.hpp"
 #include <fstream>
 #include <string>
 #include <vector>
 using namespace std;
-
-//----------------------------------------------------------------------
-// CONSTANTS
-//----------------------------------------------------------------------
-
 
 //----------------------------------------------------------------------
 // CLASS Board - DEFINITION 
@@ -19,27 +14,30 @@ using namespace std;
 class Board {
 public:
 	// constructors & destructors
-	Board(string filename); // Set size and allocate boards
+	Board(ifstream& fin); // Set size and allocate boards
 	~Board(); // Free allocated memory
 	// set methods
-	void setPlayedLetter(Position position);
+	void setPlayedLetter(const Position& position);
 	void subRemainingWords();
 	// get methods
-	char getLetter(Position position) const;
+	char getLetter(const Position& position) const;
+	char getRows() const;
+	char getColumns() const;
+	char** getBoard() const;
+	char getRemainingWords() const;
 	// search methods
-	bool checkInsideBoard(Position position) const;
+	bool checkInsideBoard(const Position& position) const;
 	bool checkValidPosition(Position position) const;
-	bool checkPossiblePlaytrough(Player player) const;
+	bool checkPossiblePlaytrough(const Player& player) const;
 	bool checkCompleteWord(Position position) const;
 	// output stream methods
 	void displayBoard(ostream& fout) const;
 private:
 	// private methods
-	void addWordOnBoard(Instruction instruction);
+	void addWordOnBoard(const Instruction& instruction);
 	// attributes
 	char rows;
 	char columns;
-	string filename;
 	char** board;
 	char** orientationsBoard; // Saves the orientation of the letters
 	char remainingWords;
