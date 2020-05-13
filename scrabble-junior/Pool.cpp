@@ -1,4 +1,5 @@
 #include "utils.hpp"
+#include "Board.hpp"
 #include "Pool.hpp"
 #include <iostream>
 #include <ctype.h>
@@ -15,11 +16,11 @@ using namespace std;
 /**
 Constructor
 */
-Pool::Pool(char** board, char rows, char columns) {
-	for (char i = 0; i < rows; i++)
-		for (char j = 0; j < columns; j++)
-			if (isalpha(board[i][j]))
-				availableTiles.push_back(board[i][j]);
+Pool::Pool(Board board) {
+	for (char i = 0; i < board.getRows(); i++)
+		for (char j = 0; j < board.getColumns(); j++)
+			if (isalpha(board.getBoard()[i][j]))
+				availableTiles.push_back(board.getBoard()[i][j]);
 	shuffleTiles(); // Initial shuffle
 }
 

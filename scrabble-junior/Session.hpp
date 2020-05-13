@@ -19,18 +19,21 @@ using namespace std;
 class Session {
 public:
 	// constructors & destructors
-	Session(Board board, Pool pool, char numberOfPlayers);
+	Session(Board board, char numberOfPlayers);
 	~Session();
-	// get methods
-	vector<Player> getPlayers() const;
 	// output stream methods
-	void displaySessionInfo() const;
-	void play(Player& player);
-	char checkWinner() const;
+	void displaySessionInfo(ostream& fout) const;
+	void displayLeaderboard() const;
+	// search methods
+	bool checkHasEnoughTiles() const;
+	// play methods
+	void gameSession();
+	void playTurn(Player& player);
+	void playTile(Player& player);
 private:
 	// attributes
-	Board board;
-	vector<Player> players;
+	Board scrabbleBoard;
 	Pool pool;
+	vector<Player> players;
 };
 #endif

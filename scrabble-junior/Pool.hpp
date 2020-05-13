@@ -6,6 +6,7 @@
 #include <vector>
 using namespace std;
 
+class Board; // Forward declare
 //----------------------------------------------------------------------
 // CONSTANTS
 //----------------------------------------------------------------------
@@ -17,7 +18,7 @@ using namespace std;
 class Pool {
 public:
 	// constructors & destructors
-	Pool(char** board, char rows, char columns);
+	Pool(Board board);
 	~Pool();
 	// set methods
 	void addTile(const char& letter);
