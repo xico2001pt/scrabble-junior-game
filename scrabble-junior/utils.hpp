@@ -46,7 +46,7 @@ typedef struct {
 // Search Functions - DEFINITION & IMPLEMENTATION 
 //----------------------------------------------------------------------
 template <typename identifier>
-bool isInVector(const identifier &elem, const vector<identifier> &v) {
+bool isInVector(const identifier& elem, const vector<identifier>& v) {
 	for (identifier value : v)
 		if (elem == value)
 			return true;
@@ -56,7 +56,7 @@ bool isInVector(const identifier &elem, const vector<identifier> &v) {
 //----------------------------------------------------------------------
 // Random Functions - DEFINITION 
 //----------------------------------------------------------------------
-size_t randomNumber(const size_t &min, const size_t &max);
+size_t randomNumber(const size_t& min, const size_t& max);
 
 //----------------------------------------------------------------------
 // Convertion Functions - DEFINITION 
@@ -67,7 +67,7 @@ Transforms a string position into a struct Position
 @param position: string which will be transformed into a struct
 @return: struct Position
 */
-Position strToPosition(const string &position);
+Position strToPosition(const string& position);
 
 //----------------------------------------------------------------------
 // Input Functions - DEFINITION 
@@ -94,5 +94,5 @@ Set text and background color
 @param background_color: background color code
 @return: (none)
 */
-void setColor(const unsigned int &color, const unsigned int &background_color);
+void setColor(const unsigned int& color, const unsigned int& background_color);
 #endif

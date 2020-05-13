@@ -14,7 +14,7 @@ using namespace std;
 //----------------------------------------------------------------------
 
 /**
-Constructor
+Constructors
 */
 Board::Board(ifstream& fin) {
 	// Temporary variables
@@ -31,14 +31,14 @@ Board::Board(ifstream& fin) {
 	this->rows = rows;
 	this->columns = columns;
 	// Allocate memory to board and orientations board (2D arrays)
-	board = (char**)malloc(rows * sizeof(char*));
-	orientationsBoard = (char**)malloc(rows * sizeof(char*));
-	for (char i = 0; i < rows; i++) {
-		board[i] = (char*)malloc(columns * sizeof(char));
-		orientationsBoard[i] = (char*)malloc(columns * sizeof(char));
+	this->board = (char**)malloc(rows * sizeof(char*));
+	this->orientationsBoard = (char**)malloc(rows * sizeof(char*));
+	for (char i = 0; i < this->rows; i++) {
+		this->board[i] = (char*)malloc(columns * sizeof(char));
+		this->orientationsBoard[i] = (char*)malloc(columns * sizeof(char));
 		// Fill each row with empty spaces
-		memset(board[i], ' ', columns);
-		memset(orientationsBoard[i], ' ', columns);
+		memset(this->board[i], ' ', columns);
+		memset(this->orientationsBoard[i], ' ', columns);
 	}
 	// Read instructions
 	char remainingWords = 0;
@@ -53,11 +53,27 @@ Board::Board(ifstream& fin) {
 		instruction.initialPosition = strToPosition(position);
 		instruction.orientation = orientation;
 		instruction.word = word;
-		addWordOnBoard(instruction); // Draw instruction on board
+		this->addWordOnBoard(instruction); // Draw instruction on board
 		remainingWords++;
 	}
 	fin.close();
 	this->remainingWords = remainingWords;
+}
+
+Board::Board(const Board& other) {
+	// Copy some attributes
+	this->rows = other.rows;
+	this->columns = other.columns;
+	this->remainingWords = other.remainingWords;
+	// Allocate memory to the new arrays
+	this->board = (char**)malloc(rows * sizeof(char*));
+	this->orientationsBoard = (char**)malloc(rows * sizeof(char*));
+	for (char i = 0; i < this->rows; i++) {
+		this->board[i] = (char*)malloc(columns * sizeof(char));
+		this->orientationsBoard[i] = (char*)malloc(columns * sizeof(char));
+		memcpy(this->board[i], other.board[i], sizeof(char) * this->columns);
+		memcpy(this->orientationsBoard[i], other.orientationsBoard[i], sizeof(char) * this->columns);
+	}
 }
 
 /**
@@ -83,11 +99,12 @@ void Board::setPlayedLetter(const Position& position) {
 }
 
 /**
-Decrement one word to the remaining words
+Decrement the given value to the remaining words
+@param difference: value which will be subtracted
 @return: (none)
 */
-void Board::subRemainingWords() {
-	remainingWords += -1;
+void Board::subRemainingWords(char difference) {
+	remainingWords -= difference;
 }
 
 /**
@@ -132,6 +149,18 @@ char Board::getRemainingWords() const {
 }
 
 /**
+Check if tile has already been played
+@param position : chosen position
+@return: boolen indicating if that tile has already been played
+*/
+bool Board::checkHasBeenPlayed(const Position& position) const
+{
+	char row = position.row;
+	char column = position.column;
+	return (islower(orientationsBoard[row][column]));
+}
+
+/**
 Checks if the indicated position is within the board size
 @param position: position which will be checked
 @return: boolean indicating if the position is within the board size
@@ -146,7 +175,11 @@ Checks if the previous letters were played
 @return: boolean indicating if the position is valid to play
 */
 bool Board::checkValidPosition(Position position) const {
-	char orientation = orientationsBoard[position.row][position.column];
+	// Check empty position
+	if (board[position.row][position.column] == ' ')
+		return false;
+	// Adjacent searches
+	char orientation = toupper(orientationsBoard[position.row][position.column]);
 	char columnCopy = position.column; // Copy to undo changes in case of intersection
 	// Horizontal search
 	if (orientation == 'H' || orientation == 'I') {
@@ -188,23 +221,64 @@ bool Board::checkPossiblePlaytrough(const Player& player) const {
 /**
 Checks if the player completed a word
 @param position: position of the chosen letter
-@return: boolean indicating if the player completed a word
+@return: number of completed words
 */
-bool Board::checkCompleteWord(Position position) const {
-	char orientation = orientationsBoard[position.row][position.column];
-	char columnCopy = position.column; // Copy to undo changes in case of intersection
-	/*// Horizontal search
-	if (orientation == 'H') {
+char Board::checkCompleteWord(Position position) const {
+	char orientation = toupper(orientationsBoard[position.row][position.column]);
+	Position positionCopy = position; // Copy to undo changes in case of intersection
+	char completedWord = 0; // Used in case of intersection or no completed words
+	// Horizontal search
+	if (orientation == 'H' || orientation == 'I') {
+		// Verify forward
 		position.column += 1;
-		while (!isupper(orientationsBoard[position.row][position.column])) {
-			if (position.column > columns || orientationsBoard[position.row][position.column] == ' ')
-				return true;
-			position.column += -1;
+		while (position.column >= columns || !isupper(orientationsBoard[position.row][position.column])) {
+			if (position.column >= columns || orientationsBoard[position.row][position.column] == ' ') {
+				if (orientation == 'H')
+					return 1;
+				// Verify backward intersection
+				else {
+					position = positionCopy;
+					position.column += -1;
+					while (position.column < 0 || !isupper(orientationsBoard[position.row][position.column])) {
+						if (position.column < 0 || orientationsBoard[position.row][position.column] == ' ') {
+							completedWord++;
+							break;
+						}
+						position.column += -1;
+					}
+				}
+				break;
+			}
+			position.column += 1;
 		}
 	}
+	position = positionCopy;
 	// Vertical search
-	*/
-	return false;
+	if (orientation == 'V' || orientation == 'I') {
+		// Verify forward
+		position.row += 1;
+		while (position.row >= rows || !isupper(orientationsBoard[position.row][position.column])) {
+			if (position.row >= rows || orientationsBoard[position.row][position.column] == ' ') {
+				if (orientation == 'V')
+					return 1;
+				// Verify backward intersection
+				else {
+					position = positionCopy;
+					position.row += -1;
+					while (position.row < 0 || !isupper(orientationsBoard[position.row][position.column])) {
+						if (position.row < 0 || orientationsBoard[position.row][position.column] == ' ') {
+							completedWord++;
+							break;
+						}
+						position.row += -1;
+					}
+				}
+				break;
+			}
+			position.row += 1;
+		}
+	}
+	return completedWord;
 }
 
 /**

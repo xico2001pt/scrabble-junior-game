@@ -20,26 +20,24 @@ using namespace std;
 class Player {
 public:
 	// constructors & destructors
-	Player(vector<char> hand);
+	Player(vector<char> hand, short ID);
 	~Player();
 	// set methods
-
+	void increaseScore(const char& increment);
+	void recoverTileFromPool(Pool& pool);
+	void removeTileFromHand(const char& letter);
+	void tradeTiles(Pool& pool);
 	// get methods
 	unsigned char getScore() const;
+	short getID() const;
 	// search methods
-	bool checkHasTile(const char &letter) const;
+	bool checkHasTile(const char& letter) const;
 	// output stream methods
 	void displayTiles(ostream& fout) const;
-	// other methods
-	void play();
 private:
-	// private methods
-	void recoverTileFromPool(Pool &pool);
-	void removeTileFromHand(const char &letter);
-	void tradeTiles(Pool& pool);
 	// attributes
 	unsigned char score;
 	vector<char> hand;
-
+	short ID;
 };
 #endif
