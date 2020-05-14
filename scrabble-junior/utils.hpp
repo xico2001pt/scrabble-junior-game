@@ -56,6 +56,13 @@ bool isInVector(const identifier& elem, const vector<identifier>& v) {
 //----------------------------------------------------------------------
 // Random Functions - DEFINITION 
 //----------------------------------------------------------------------
+
+/**
+Gets a random number between the given limits (inclusive)
+@param min: lower limit
+@param max: upper limit
+@return: random non-negative integer between the given limits
+*/
 size_t randomNumber(const size_t& min, const size_t& max);
 
 //----------------------------------------------------------------------
@@ -84,6 +91,12 @@ Reads the user input
 return: character holding the chosen tile
 */
 char readTile();
+
+/**
+Reads an integer
+return: integer chosen by the user
+*/
+int readInteger();
 //----------------------------------------------------------------------
 // Output Functions - DEFINITION 
 //----------------------------------------------------------------------

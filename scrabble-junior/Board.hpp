@@ -37,6 +37,10 @@ public:
 private:
 	// private methods
 	void addWordOnBoard(const Instruction& instruction);
+	bool checkAllPlayedUp(Position position) const;
+	bool checkAllPlayedDown(Position position) const;
+	bool checkAllPlayedRight(Position position) const;
+	bool checkAllPlayedLeft(Position position) const;
 	// attributes
 	char rows;
 	char columns;

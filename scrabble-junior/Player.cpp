@@ -81,6 +81,10 @@ unsigned char Player::getScore() const {
 	return score;
 }
 
+/**
+Gets the ID of the player
+@return: ID of the player
+*/
 short Player::getID() const {
 	return ID;
 }

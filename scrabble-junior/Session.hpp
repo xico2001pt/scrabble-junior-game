@@ -19,11 +19,11 @@ using namespace std;
 class Session {
 public:
 	// constructors & destructors
-	Session(Board board, char numberOfPlayers);
+	Session(Board board, int numberOfPlayers);
 	~Session();
 	// output stream methods
 	void displaySessionInfo(ostream& fout) const;
-	void displayLeaderboard() const;
+	void displayLeaderboard(ostream& fout) const;
 	// search methods
 	bool checkHasEnoughTiles() const;
 	// play methods

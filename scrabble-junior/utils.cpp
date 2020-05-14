@@ -56,9 +56,26 @@ char readTile() {
 			isValid = true;
 		else {
 			cin.clear();
-			cin.ignore(100, '\n');
 			cout << "Invalid Syntax!" << endl;
 		}
+		cin.ignore(100, '\n');
+	} while (!isValid);
+	return input;
+}
+
+int readInteger() {
+	int input;
+	// User Input Loop
+	bool isValid = false;
+	do {
+		cin >> input;
+		if (!cin.fail() && cin.peek() == '\n')
+			isValid = true;
+		else {
+			cin.clear();
+			cout << "Valid input, please enter an integer!" << endl;
+		}
+		cin.ignore(100, '\n');
 	} while (!isValid);
 	return input;
 }

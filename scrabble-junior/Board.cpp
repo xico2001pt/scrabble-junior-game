@@ -180,26 +180,14 @@ bool Board::checkValidPosition(Position position) const {
 		return false;
 	// Adjacent searches
 	char orientation = toupper(orientationsBoard[position.row][position.column]);
-	char columnCopy = position.column; // Copy to undo changes in case of intersection
 	// Horizontal search
-	if (orientation == 'H' || orientation == 'I') {
-		position.column += -1;
-		while (position.column < 0 || !isupper(orientationsBoard[position.row][position.column])) {
-			if (position.column < 0 || orientationsBoard[position.row][position.column] == ' ')
-				return true;
-			position.column += -1;
-		}
-	}
-	position.column = columnCopy;
+	if (orientation == 'H' || orientation == 'I')
+		if (checkAllPlayedLeft(position))
+			return true;
 	// Vertical search
-	if (orientation == 'V' || orientation == 'I') {
-		position.row += -1;
-		while (position.row < 0 || !isupper(orientationsBoard[position.row][position.column])) {
-			if (position.row < 0 || orientationsBoard[position.row][position.column] == ' ')
-				return true;
-			position.row += -1;
-		}
-	}
+	if (orientation == 'V' || orientation == 'I')
+		if (checkAllPlayedUp(position))
+			return true;
 	return false;
 }
 
@@ -225,60 +213,23 @@ Checks if the player completed a word
 */
 char Board::checkCompleteWord(Position position) const {
 	char orientation = toupper(orientationsBoard[position.row][position.column]);
-	Position positionCopy = position; // Copy to undo changes in case of intersection
-	char completedWord = 0; // Used in case of intersection or no completed words
+	char completedWords = 0; // Used in case of intersection or no completed words
 	// Horizontal search
-	if (orientation == 'H' || orientation == 'I') {
-		// Verify forward
-		position.column += 1;
-		while (position.column >= columns || !isupper(orientationsBoard[position.row][position.column])) {
-			if (position.column >= columns || orientationsBoard[position.row][position.column] == ' ') {
-				if (orientation == 'H')
-					return 1;
-				// Verify backward intersection
-				else {
-					position = positionCopy;
-					position.column += -1;
-					while (position.column < 0 || !isupper(orientationsBoard[position.row][position.column])) {
-						if (position.column < 0 || orientationsBoard[position.row][position.column] == ' ') {
-							completedWord++;
-							break;
-						}
-						position.column += -1;
-					}
-				}
-				break;
-			}
-			position.column += 1;
-		}
-	}
-	position = positionCopy;
+	if (orientation == 'H' && checkAllPlayedRight(position))
+		completedWords++;
 	// Vertical search
-	if (orientation == 'V' || orientation == 'I') {
-		// Verify forward
-		position.row += 1;
-		while (position.row >= rows || !isupper(orientationsBoard[position.row][position.column])) {
-			if (position.row >= rows || orientationsBoard[position.row][position.column] == ' ') {
-				if (orientation == 'V')
-					return 1;
-				// Verify backward intersection
-				else {
-					position = positionCopy;
-					position.row += -1;
-					while (position.row < 0 || !isupper(orientationsBoard[position.row][position.column])) {
-						if (position.row < 0 || orientationsBoard[position.row][position.column] == ' ') {
-							completedWord++;
-							break;
-						}
-						position.row += -1;
-					}
-				}
-				break;
-			}
-			position.row += 1;
-		}
+	else if (orientation == 'V' && checkAllPlayedDown(position))
+		completedWords++;
+	// Intersection search
+	else if (orientation == 'I') {
+		// Horizontal search
+		if (checkAllPlayedLeft(position) && checkAllPlayedRight(position))
+			completedWords++;
+		// Vertical search
+		if (checkAllPlayedUp(position) && checkAllPlayedDown(position))
+			completedWords++;
 	}
-	return completedWord;
+	return completedWords;
 }
 
 /**
@@ -341,4 +292,64 @@ void Board::addWordOnBoard(const Instruction& instruction) {
 				*value = 'V';
 		}
 	}
+}
+
+/**
+Checks if all the upwards letters are played until an empty spot is found
+@param position: position of the chosen letter
+@return: boolean indicating if all the upwards letters are played
+*/
+bool Board::checkAllPlayedUp(Position position) const {
+	position.row += -1;
+	while (position.row < 0 || !isupper(orientationsBoard[position.row][position.column])) {
+		if (position.row < 0 || orientationsBoard[position.row][position.column] == ' ')
+			return true;
+		position.row += -1;
+	}
+	return false;
+}
+
+/**
+Checks if all the downwards letters are played until an empty spot is found
+@param position: position of the chosen letter
+@return: boolean indicating if all the downwards letters are played
+*/
+bool Board::checkAllPlayedDown(Position position) const {
+	position.row += 1;
+	while (position.row >= rows || !isupper(orientationsBoard[position.row][position.column])) {
+		if (position.row >= rows || orientationsBoard[position.row][position.column] == ' ')
+			return true;
+		position.row += 1;
+	}
+	return false;
+}
+
+/**
+Checks if all the rightwards letters are played until an empty spot is found
+@param position: position of the chosen letter
+@return: boolean indicating if all the rightwards letters are played
+*/
+bool Board::checkAllPlayedRight(Position position) const {
+	position.column += 1;
+	while (position.column >= columns || !isupper(orientationsBoard[position.row][position.column])) {
+		if (position.column >= columns || orientationsBoard[position.row][position.column] == ' ')
+			return true;
+		position.column += 1;
+	}
+	return false;
+}
+
+/**
+Checks if all the leftwards letters are played until an empty spot is found
+@param position: position of the chosen letter
+@return: boolean indicating if all the leftwards letters are played
+*/
+bool Board::checkAllPlayedLeft(Position position) const {
+	position.column += -1;
+	while (position.column < 0 || !isupper(orientationsBoard[position.row][position.column])) {
+		if (position.column < 0 || orientationsBoard[position.row][position.column] == ' ')
+			return true;
+		position.column += -1;
+	}
+	return false;
 }

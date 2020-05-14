@@ -17,7 +17,7 @@ using namespace std;
 /**
 Constructor
 */
-Session::Session(Board board, char numberOfPlayers) : scrabbleBoard(board), pool(Pool(board)) {
+Session::Session(Board board, int numberOfPlayers) : scrabbleBoard(board), pool(Pool(board)) {
 	for (short i = 0; i < numberOfPlayers; i++)
 		players.push_back(Player(this->pool.getRandomHand(), i + 1));
 }
@@ -28,6 +28,11 @@ Destructor
 Session::~Session() {
 }
 
+/**
+Displays the board and the players scores and hands
+@param fout: output stream where the session info will be displayed
+@return: (none)
+*/
 void Session::displaySessionInfo(ostream& fout) const {
 	system("cls"); // Clear console
 	fout << "Remaining Pool Tiles: ";
@@ -41,15 +46,46 @@ void Session::displaySessionInfo(ostream& fout) const {
 	for (Player player : players) {
 		fout << "| Player " << player.getID() << ": ";
 		player.displayTiles(fout);
-		cout << "| Score: " << setw(6) << (int)player.getScore() << " |" << endl;
+		fout << "| Score: " << setw(6) << (int)player.getScore() << " |" << endl;
 	}
 	fout << "-------------------------------------------" << endl;
 }
 
+/**
+Displays the leaderboard
+@param fout: output stream where the session info will be displayed
+@return: (none)
+*/
+void Session::displayLeaderboard(ostream& fout) const {
+	system("cls");
+	fout << "|-------   LEADERBOARD   -------|" << endl;
+	for (Player player : players)
+		fout << "|    Player " << player.getID() << "       " << right << setw(3) << (int)player.getScore() << left << " PTS     |" << endl;
+	fout << "|-------------------------------|" << endl;
+	/*
+
+	|-------   LEADERBOARD   -------|
+	|    Player 1       120 PTS     |
+	|    Player 2         2 PTS     |
+	|    Player 3        21 PTS     |
+	|    Player 4        10 PTS     |
+	|-------------------------------|
+
+	*/
+}
+
+/**
+Checks if there are enough initial tiles for every player
+@return: boolean indicating if the enough initial tiles for every player
+*/
 bool Session::checkHasEnoughTiles() const {
 	return (pool.getAvailableTilesNumber() >= INITIAL_TILES * players.size());
 }
 
+/**
+Manages the entire game
+@return: (none)
+*/
 void Session::gameSession() {
 	// Check for enough tiles
 	if (!checkHasEnoughTiles())
@@ -60,10 +96,18 @@ void Session::gameSession() {
 		playTurn(players.at(currentPlayer));
 		currentPlayer = (currentPlayer + 1) % players.size();
 	}
+	cout << "All tiles have been played!" << endl;
+	getchar(); // Wait for the user to continue
 	// Display leaderboard
-
+	displayLeaderboard(cout);
+	getchar(); // Wait for the user to continue
 }
 
+/**
+Manages each turn
+@param player: player who is playing the turn
+@return: (none)
+*/
 void Session::playTurn(Player& player) {
 	char tilesPlayed = 0;
 	displaySessionInfo(cout);
@@ -76,11 +120,25 @@ void Session::playTurn(Player& player) {
 		displaySessionInfo(cout);
 		tilesPlayed++;
 	}
-	if (tilesPlayed == 0)
-		for (size_t i = 0; i < min((size_t)PLAYS_PER_TURN, pool.getAvailableTilesNumber()); i++)
+	if (tilesPlayed == 0) {
+		if (pool.getAvailableTilesNumber() == 0)
+			cout << "You can't play in this turn!" << endl;
+		for (size_t i = 0; i < min((size_t)PLAYS_PER_TURN, pool.getAvailableTilesNumber()); i++) {
+			cout << "Choose the tile you want to trade:" << endl;
 			player.tradeTiles(pool);
+		}
+	}
+	else if (tilesPlayed == 1 && scrabbleBoard.getRemainingWords() > 0) {
+		cout << "You can't play a second tile!" << endl;
+		getchar(); // Wait for the user to continue
+	}
 }
 
+/**
+Manages the game according to the chosen tile
+@param player: player who is playing the turn
+@return: (none)
+*/
 void Session::playTile(Player& player) {
 	Position position;
 	char completedWords;
