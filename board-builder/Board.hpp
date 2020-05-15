@@ -1,7 +1,7 @@
-#ifndef BOARD_H
-#define BOARD_H
+#ifndef BOARD_HPP
+#define BOARD_HPP
 
-#include "utils.h"
+#include "utils.hpp"
 #include <fstream>
 #include <string>
 #include <vector>
@@ -11,7 +11,7 @@ using namespace std;
 // CONSTANTS
 //----------------------------------------------------------------------
 #define MAX_SIZE 20
-#define MIN_SIZE 1
+#define MIN_SIZE 5
 #define DICTIONARY_FILE "WORDS.txt"
 
 //----------------------------------------------------------------------
@@ -23,13 +23,15 @@ public:
 	Board(char rows, char columns, string filename); // Set size and allocate boards
 	~Board(); // Free allocated memory
 	// set methods
-	void addWordOnBoard(Instruction instruction);
+	void addWordOnBoard(const Instruction& instruction);
+	// get methods
+	unsigned short getNumberOfTiles() const;
 	// search methods
 	bool checkWordInDict(string word) const;
-	bool checkInstructionInVector(Instruction instruction) const;
-	bool checkAdjacentPositions(Instruction instruction) const;
-	bool checkInsideBoard(Instruction instruction) const;
-	bool checkIntersection(Instruction instruction) const;
+	bool checkInstructionInVector(const Instruction& instruction) const;
+	bool checkAdjacentPositions(const Instruction& instruction) const;
+	bool checkInsideBoard(const Instruction& instruction) const;
+	bool checkIntersection(const Instruction& instruction) const;
 	// output stream methods
 	void displayBoard(ostream& fout) const;
 	void saveBoard() const;
@@ -41,5 +43,6 @@ private:
 	vector<Instruction> instructions;
 	char** board;
 	char** orientationsBoard; // Saves the orientation of the letters
+	unsigned short numberOfTiles;
 };
 #endif

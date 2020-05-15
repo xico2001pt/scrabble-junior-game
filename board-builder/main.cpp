@@ -6,8 +6,8 @@ PROGRAM PURPOSE:
 - Allow user to create a board that can be used to play Scrabble Junior
 */
 
-#include "utils.h"
-#include "Board.h"
+#include "utils.hpp"
+#include "Board.hpp"
 #include <iostream>
 using namespace std;
 
@@ -60,8 +60,12 @@ int main() {
 		}
 	}
 	// Save file
-	board.saveBoard();
-	cout << "The board was successfully saved!" << endl;
+	if (board.getNumberOfTiles() < 14)
+		cerr << "The file won't be saved because it doesn't have at least 14 tiles!" << endl;
+	else {
+		board.saveBoard();
+		cout << "The board was successfully saved!" << endl;
+	}
 	getchar(); // Wait for the user to continue
 	return 0;
 }

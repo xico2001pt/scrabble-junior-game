@@ -1,5 +1,6 @@
-#include "utils.h"
+#include "utils.hpp"
 #include <iostream>
+#include <ctype.h>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -8,17 +9,17 @@
 using namespace std;
 
 //----------------------------------------------------------------------
-// Convertion Functions - DECLARATION 
+// Convertion Functions - IMPLEMENTATION 
 //----------------------------------------------------------------------
 
-Position strToPosition(string str) {
+Position strToPosition(const string& str) {
 	Position position;
 	position.row = str.at(0) - 65;
 	position.column = str.at(1) - 97;
 	return position;
 }
 
-string positionToStr(Position position) {
+string positionToStr(const Position& position) {
 	string str = "";
 	char row = position.row + 65;
 	char column = position.column + 97;
@@ -38,7 +39,7 @@ string lowerWord(string str) {
 }
 
 //----------------------------------------------------------------------
-// Input Functions - DECLARATION
+// Input Functions - IMPLEMENTATION 
 //----------------------------------------------------------------------
 
 bool readInstruction(Instruction& instruction) {
@@ -58,7 +59,7 @@ bool readInstruction(Instruction& instruction) {
 			cin.clear();
 			return false;
 		}
-		else if (initialPosition[0] >= 'A' && initialPosition[0] <= 'Z' && initialPosition[1] >= 'a' && initialPosition[1] <= 'z' && (orientation == 'H' || orientation == 'V') && word != "")
+		else if (isupper(initialPosition[0]) && islower(initialPosition[1]) && (orientation == 'H' || orientation == 'V') && word != "")
 			isValid = true;
 		else
 			cerr << "Invalid Syntax!" << endl;
@@ -71,10 +72,10 @@ bool readInstruction(Instruction& instruction) {
 }
 
 //----------------------------------------------------------------------
-// Output Functions - DECLARATION 
+// Output Functions - IMPLEMENTATION 
 //----------------------------------------------------------------------
 
-void setColor(unsigned int color, unsigned int background_color) {
+void setColor(const unsigned int& color, const unsigned int& background_color) {
 	HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
 	if (background_color == BLACK)
 		SetConsoleTextAttribute(hCon, color);

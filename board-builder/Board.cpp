@@ -1,5 +1,5 @@
-#include "utils.h"
-#include "Board.h"
+#include "utils.hpp"
+#include "Board.hpp"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -14,11 +14,7 @@ using namespace std;
 /**
 Constructor
 */
-Board::Board(char rows, char columns, string filename) {
-	// Initialize size and name of the board
-	this->rows = rows;
-	this->columns = columns;
-	this->filename = filename;
+Board::Board(char rows, char columns, string filename) : rows(rows), columns(columns), filename(filename), numberOfTiles(0) {
 	// Allocate memory to board and orientations board (2D arrays)
 	board = (char**)malloc(rows * sizeof(char*));
 	orientationsBoard = (char**)malloc(rows * sizeof(char*));
@@ -49,7 +45,7 @@ Adds a word in the array board
 @param instruction: contains the information necessary to add a word on the board
 @return: (none)
 */
-void Board::addWordOnBoard(Instruction instruction) {
+void Board::addWordOnBoard(const Instruction& instruction) {
 	// Store instruction information
 	Position initialPosition = instruction.initialPosition;
 	char orientation = instruction.orientation;
@@ -66,8 +62,10 @@ void Board::addWordOnBoard(Instruction instruction) {
 			value = &(orientationsBoard[initialPosition.row][initialPosition.column + i]);
 			if (*value == 'V')
 				*value = 'I'; // Intersection
-			else
+			else {
 				*value = 'H';
+				numberOfTiles++; // Increase the total number of tiles
+			}
 		}
 		if (initialPosition.column + i < columns)
 			board[initialPosition.row][initialPosition.column + i] = -1; // Forbidden spot
@@ -80,14 +78,24 @@ void Board::addWordOnBoard(Instruction instruction) {
 			value = &(orientationsBoard[initialPosition.row + i][initialPosition.column]);
 			if (*value == 'H')
 				*value = 'I'; // Intersection
-			else
+			else {
 				*value = 'V';
+				numberOfTiles++; // Increase total number of tiles
+			}
 		}
 		if (initialPosition.row + i < rows)
 			board[initialPosition.row + i][initialPosition.column] = -1; // Forbidden spot
 	}
 	// Store in instructions vector
 	instructions.push_back(instruction);
+}
+
+/**
+Gets the number of tiles on the board
+@return: number of tiles
+*/
+unsigned short Board::getNumberOfTiles() const {
+	return numberOfTiles;
 }
 
 /**
@@ -113,7 +121,7 @@ Checks if instruction already exists
 @param instruction: struct which will be searched
 @return: boolean indicating if the instruction already exists
 */
-bool Board::checkInstructionInVector(Instruction instruction) const {
+bool Board::checkInstructionInVector(const Instruction& instruction) const {
 	// Store instruction information
 	Position initialPosition = instruction.initialPosition;
 	char orientation = instruction.orientation;
@@ -131,7 +139,7 @@ Check if the instruction is valid based in the adjacent positions
 @param instruction: instruction which will be checked
 @return: boolean indicating if the instruction is valid
 */
-bool Board::checkAdjacentPositions(Instruction instruction) const {
+bool Board::checkAdjacentPositions(const Instruction& instruction) const {
 	// Store instruction information
 	Position initialPosition = instruction.initialPosition;
 	char orientation = instruction.orientation;
@@ -159,7 +167,7 @@ Checks if the chosen instruction is within the board limits
 @param instruction: struct containing the necessary information to check
 @return: boolean indicating if the instruction is within the board limits
 */
-bool Board::checkInsideBoard(Instruction instruction) const {
+bool Board::checkInsideBoard(const Instruction& instruction) const {
 	// Store instruction information
 	Position initialPosition = instruction.initialPosition;
 	char orientation = instruction.orientation;
@@ -181,7 +189,7 @@ Checks if the word respects other words intersections
 @param instruction: instruction which will be checked
 @return: boolean indicating if the word respects intersections
 */
-bool Board::checkIntersection(Instruction instruction) const {
+bool Board::checkIntersection(const Instruction& instruction) const {
 	// Store instruction information
 	Position initialPosition = instruction.initialPosition;
 	char orientation = instruction.orientation;

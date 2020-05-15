@@ -1,5 +1,5 @@
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef UTILS_HPP
+#define UTILS_HPP
 
 #include <string>
 using namespace std;
@@ -50,14 +50,14 @@ Transforms a string position into a struct Position
 @param position: string which will be transformed into a struct
 @return: struct Position
 */
-Position strToPosition(string position);
+Position strToPosition(const string& position);
 
 /**
 Transforms a struct position into a string
 @param position: struct which will be transformed into a string
 @return: string
 */
-string positionToStr(Position position);
+string positionToStr(const Position& position);
 
 /**
 Transforms all letters of a string into uppercase
@@ -74,7 +74,7 @@ Transforms all letters of a string into lowercase
 string lowerWord(string str);
 
 //----------------------------------------------------------------------
-// Output Functions - DEFINITION 
+// Input Functions - DEFINITION 
 //----------------------------------------------------------------------
 
 /**
@@ -94,5 +94,5 @@ Set text and background color
 @param background_color: background color code
 @return: (none)
 */
-void setColor(unsigned int color, unsigned int background_color);
+void setColor(const unsigned int& color, const unsigned int& background_color);
 #endif
