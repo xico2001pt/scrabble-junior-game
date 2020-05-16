@@ -25,6 +25,8 @@ Board::Board(char rows, char columns, string filename) : rows(rows), columns(col
 		memset(board[i], ' ', columns);
 		memset(orientationsBoard[i], ' ', columns);
 	}
+	// Save the dictionary words
+	readDictionary();
 }
 
 /**
@@ -103,17 +105,8 @@ Check if the given word appears in the words dictionary
 @param word: word that will be searched
 @return: boolean indicating if the word appears
 */
-bool Board::checkWordInDict(string word) const {
-	// Lowercase word
-	word = lowerWord(word);
-	// Open dictionary file
-	ifstream dict(DICTIONARY_FILE);
-	// Search loop
-	string dictWord;
-	while (getline(dict, dictWord))
-		if (word == dictWord)
-			return true;
-	return false;
+bool Board::checkWordInDict(const string& word) const {
+	return binary_search(dictionary.begin(), dictionary.end(), lowerWord(word));
 }
 
 /**
@@ -153,7 +146,7 @@ bool Board::checkAdjacentPositions(const Instruction& instruction) const {
 				return false;
 		}
 	else
-		for (unsigned char i = 0; i < word.length(); i++) {
+		for (unsigned char i = 1; i < word.length() - 1; i++) {
 			if (initialPosition.column - 1 >= 0 && (orientationsBoard[initialPosition.row + i][initialPosition.column - 1] == 'V' || orientationsBoard[initialPosition.row + i][initialPosition.column - 1] == 'I'))
 				return false;
 			else if (initialPosition.column + 1 < columns && (orientationsBoard[initialPosition.row + i][initialPosition.column + 1] == 'V' || orientationsBoard[initialPosition.row + i][initialPosition.column + 1] == 'I'))
@@ -269,4 +262,17 @@ void Board::saveBoard() const {
 	fout << endl;
 	displayBoard(fout);
 	fout.close();
+}
+
+/**
+Reads the dictionary and adds the words to a vector
+@return: (none)
+*/
+void Board::readDictionary()  {
+	// Open dictionary file
+	ifstream dict(DICTIONARY_FILE);
+	// Loop to get every word
+	string dictWord;
+	while (getline(dict, dictWord))
+		dictionary.push_back(dictWord);
 }

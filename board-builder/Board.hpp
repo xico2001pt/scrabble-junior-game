@@ -27,7 +27,7 @@ public:
 	// get methods
 	unsigned short getNumberOfTiles() const;
 	// search methods
-	bool checkWordInDict(string word) const;
+	bool checkWordInDict(const string& word) const;
 	bool checkInstructionInVector(const Instruction& instruction) const;
 	bool checkAdjacentPositions(const Instruction& instruction) const;
 	bool checkInsideBoard(const Instruction& instruction) const;
@@ -36,6 +36,8 @@ public:
 	void displayBoard(ostream& fout) const;
 	void saveBoard() const;
 private:
+	// private methods
+	void readDictionary();
 	// attributes
 	char rows;
 	char columns;
@@ -44,5 +46,6 @@ private:
 	char** board;
 	char** orientationsBoard; // Saves the orientation of the letters
 	unsigned short numberOfTiles;
+	vector<string> dictionary;
 };
 #endif

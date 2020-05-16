@@ -62,16 +62,6 @@ void Session::displayLeaderboard(ostream& fout) const {
 	for (Player player : players)
 		fout << "|    Player " << player.getID() << "       " << right << setw(3) << (int)player.getScore() << left << " PTS     |" << endl;
 	fout << "|-------------------------------|" << endl;
-	/*
-
-	|-------   LEADERBOARD   -------|
-	|    Player 1       120 PTS     |
-	|    Player 2         2 PTS     |
-	|    Player 3        21 PTS     |
-	|    Player 4        10 PTS     |
-	|-------------------------------|
-
-	*/
 }
 
 /**
@@ -90,17 +80,19 @@ void Session::gameSession() {
 	// Check for enough tiles
 	if (!checkHasEnoughTiles())
 		cerr << "There aren't enough tiles to everyone!\nThe game will be shut down!" << endl;
-	// Game Loop
-	char currentPlayer = 0;
-	while (scrabbleBoard.getRemainingWords() > 0) {
-		playTurn(players.at(currentPlayer));
-		currentPlayer = (currentPlayer + 1) % players.size();
+	else {
+		// Game Loop
+		char currentPlayer = 0;
+		while (scrabbleBoard.getRemainingWords() > 0) {
+			playTurn(players.at(currentPlayer));
+			currentPlayer = (currentPlayer + 1) % players.size();
+		}
+		cout << "All tiles have been played!" << endl;
+		getchar(); // Wait for the user to continue
+		// Display leaderboard
+		displayLeaderboard(cout);
+		getchar(); // Wait for the user to continue
 	}
-	cout << "All tiles have been played!" << endl;
-	getchar(); // Wait for the user to continue
-	// Display leaderboard
-	displayLeaderboard(cout);
-	getchar(); // Wait for the user to continue
 }
 
 /**
