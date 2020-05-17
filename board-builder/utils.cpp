@@ -29,12 +29,12 @@ string positionToStr(const Position& position) {
 }
 
 string upperWord(string str) {
-	transform(str.begin(), str.end(), str.begin(), toupper);
+	transform(str.begin(), str.end(), str.begin(), ::toupper);
 	return str;
 }
 
 string lowerWord(string str) {
-	transform(str.begin(), str.end(), str.begin(), tolower);
+	transform(str.begin(), str.end(), str.begin(), ::tolower);
 	return str;
 }
 

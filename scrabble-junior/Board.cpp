@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <cstring>
 #include <vector>
 #include <algorithm>
 using namespace std;
@@ -153,11 +154,8 @@ Check if tile has already been played
 @param position : chosen position
 @return: boolen indicating if that tile has already been played
 */
-bool Board::checkHasBeenPlayed(const Position& position) const
-{
-	char row = position.row;
-	char column = position.column;
-	return (islower(orientationsBoard[row][column]));
+bool Board::checkHasBeenPlayed(const Position& position) const {
+	return (islower(orientationsBoard[position.row][position.column]));
 }
 
 /**
