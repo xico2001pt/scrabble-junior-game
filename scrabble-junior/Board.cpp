@@ -29,6 +29,9 @@ Board::Board(ifstream& fin) {
 	getline(fin, line);
 	ss << line;
 	ss >> rows >> separator >> columns;
+	// Clear stringstream
+	ss.ignore(100, '\n');
+	ss.clear();
 	this->rows = rows;
 	this->columns = columns;
 	// Allocate memory to board and orientations board (2D arrays)
@@ -43,12 +46,8 @@ Board::Board(ifstream& fin) {
 	}
 	// Read instructions
 	char remainingWords = 0;
-	while (!fin.eof() && line != "") {
-		// Clear stream
-		ss.ignore(100, '\n');
-		ss.clear();
+	while (getline(fin, line) && line != "") {
 		// Read instruction
-		getline(fin, line);
 		ss << line;
 		ss >> position >> orientation >> word;
 		instruction.initialPosition = strToPosition(position);
@@ -56,6 +55,9 @@ Board::Board(ifstream& fin) {
 		instruction.word = word;
 		this->addWordOnBoard(instruction); // Draw instruction on board
 		remainingWords++;
+		// Clear stringstream
+		ss.ignore(100, '\n');
+		ss.clear();
 	}
 	fin.close();
 	this->remainingWords = remainingWords;
@@ -205,13 +207,13 @@ bool Board::checkPossiblePlaytrough(const Player& player) const {
 }
 
 /**
-Checks if the player completed a word
+Checks the number of completed words by the player
 @param position: position of the chosen letter
 @return: number of completed words
 */
 char Board::checkCompleteWord(Position position) const {
 	char orientation = toupper(orientationsBoard[position.row][position.column]);
-	char completedWords = 0; // Used in case of intersection or no completed words
+	char completedWords = 0;
 	// Horizontal search
 	if (orientation == 'H' && checkAllPlayedRight(position))
 		completedWords++;

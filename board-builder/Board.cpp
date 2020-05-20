@@ -230,6 +230,11 @@ Display the board in the specified output stream
 @return: (none)
 */
 void Board::displayBoard(ostream& fout) const {
+	fout << "Current Words: ";
+	setColor(YELLOW, BLACK);
+	fout << instructions.size() << endl;
+	setColor(LIGHTGRAY, BLACK); // Reset text and background color
+	fout << endl;
 	// Print first row
 	fout << ' ';
 	for (char i = 0; i < columns; i++)

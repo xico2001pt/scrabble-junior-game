@@ -7,7 +7,7 @@ Class:	1MIEIC07
 Group:	T7G06
 
 ------------------------------------------------------------------------------
-				DEVELOPMENT STATE
+				DEVELOPMENT PRACTICES
 ------------------------------------------------------------------------------
 When developing the program, the following recomendations were respected:
 	- Adequate choice of identifiers of types, variables and functions.
@@ -103,10 +103,10 @@ ALGORITHMS & DATA STRUCTURES USED:
   a b c d e f g h i j k l m n o   	  a b c d e f g h i j k l m n o
 A   F           D     E G G S		A   V           V     H H I H
 B   R   B     B U Z Z     O		B   V   V     h I H I     V
-C M U S I C     C   E     A R M		C H I H I H     V   V     I H V
+C M U S I C     C   E     A R M		C H I H I H     V   V     I H I
 D   I   C       K   B O A T   O		D   V   V       V   I H H I   V
 E   T O Y   S       R         N		E   i H I   V       V         V
-F       C   H       A R C A D E		F       V   V       I H I H H V
+F       C   H       A R C A D E		F       V   V       I H I H H I
 G       L   E   T       A     Y		G       V   V   V       V     V
 H     T E L E V I S I O N		H     H I H I H I H H H I
 I           P   G       D O G		I           V   V       I H I

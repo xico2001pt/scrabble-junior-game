@@ -37,7 +37,13 @@ int main() {
 	}
 	// Game setup
 	Board board(fin); // Create Board
-	Session session(board, numberOfPlayers); // Create Session
+	Pool pool(board); // Create Pool
+	if (pool.getAvailableTilesNumber() < INITIAL_TILES * numberOfPlayers) {
+		cerr << "There aren't enough tiles to everyone!\nThe game will be shut down!" << endl;
+		getchar(); // Wait for the user to continue
+		exit(1); // Stop the program with exit code != 0
+	}
+	Session session(board, pool, numberOfPlayers); // Create Session
 	// Play the game
 	session.gameSession();
 	return 0;

@@ -17,9 +17,9 @@ using namespace std;
 /**
 Constructor
 */
-Session::Session(Board board, int numberOfPlayers) : scrabbleBoard(board), pool(Pool(board)) {
-	for (short i = 0; i < numberOfPlayers; i++)
-		players.push_back(Player(this->pool.getRandomHand(), i + 1));
+Session::Session(Board board, Pool pool, int numberOfPlayers) : scrabbleBoard(board), pool(pool) {
+	for (short i = 1; i <= numberOfPlayers; i++)
+		players.push_back(Player(this->pool.getRandomHand(), i));
 }
 
 /**
@@ -38,6 +38,10 @@ void Session::displaySessionInfo(ostream& fout) const {
 	fout << "Remaining Pool Tiles: ";
 	setColor(YELLOW, BLACK);
 	fout << pool.getAvailableTilesNumber() << endl;
+	setColor(LIGHTGRAY, BLACK); // Reset text and background color
+	fout << "Remaining Words: ";
+	setColor(YELLOW, BLACK);
+	fout << (int)scrabbleBoard.getRemainingWords() << endl;
 	setColor(LIGHTGRAY, BLACK); // Reset text and background color
 
 	scrabbleBoard.displayBoard(fout);
@@ -65,34 +69,21 @@ void Session::displayLeaderboard(ostream& fout) const {
 }
 
 /**
-Checks if there are enough initial tiles for every player
-@return: boolean indicating if the enough initial tiles for every player
-*/
-bool Session::checkHasEnoughTiles() const {
-	return (pool.getAvailableTilesNumber() >= INITIAL_TILES * players.size());
-}
-
-/**
 Manages the entire game
 @return: (none)
 */
 void Session::gameSession() {
-	// Check for enough tiles
-	if (!checkHasEnoughTiles())
-		cerr << "There aren't enough tiles to everyone!\nThe game will be shut down!" << endl;
-	else {
-		// Game Loop
-		char currentPlayer = 0;
-		while (scrabbleBoard.getRemainingWords() > 0) {
-			playTurn(players.at(currentPlayer));
-			currentPlayer = (currentPlayer + 1) % players.size();
-		}
-		cout << "All tiles have been played!" << endl;
-		getchar(); // Wait for the user to continue
-		// Display leaderboard
-		displayLeaderboard(cout);
-		getchar(); // Wait for the user to continue
+	// Game Loop
+	char currentPlayer = 0;
+	while (scrabbleBoard.getRemainingWords() > 0) {
+		playTurn(players.at(currentPlayer));
+		currentPlayer = (currentPlayer + 1) % players.size();
 	}
+	cout << "All tiles have been played!" << endl;
+	getchar(); // Wait for the user to continue
+	// Display leaderboard
+	displayLeaderboard(cout);
+	getchar(); // Wait for the user to continue
 }
 
 /**
@@ -113,10 +104,18 @@ void Session::playTurn(Player& player) {
 		tilesPlayed++;
 	}
 	if (tilesPlayed == 0) {
-		if (pool.getAvailableTilesNumber() == 0)
-			cout << "You can't play in this turn!" << endl;
+		if (pool.getAvailableTilesNumber() == 0) {
+			setColor(LIGHTBLUE, BLACK);
+			cout << "Player " << player.getID();
+			setColor(LIGHTGRAY, BLACK);
+			cout << ", you can't play in this turn!" << endl;
+			getchar(); // Wait for the user to continue
+		}
 		for (size_t i = 0; i < min((size_t)PLAYS_PER_TURN, pool.getAvailableTilesNumber()); i++) {
-			cout << "Choose the tile you want to trade:" << endl;
+			setColor(LIGHTBLUE, BLACK);
+			cout << "Player " << player.getID();
+			setColor(LIGHTGRAY, BLACK);
+			cout << ", choose the tile you want to trade:" << endl;
 			player.tradeTiles(pool);
 		}
 	}
